@@ -7,11 +7,21 @@ const inputPass = document.querySelector(`#pass`);
 const inputPassConfirm = document.querySelector(`#pass--confirm`);
 const btnConfirm = document.querySelector(`.btn-confirm`);
 
+const storedRegisteredUsers = JSON.parse(
+  localStorage.getItem(`registeredUsers`)
+);
+
 const passRequirements = /^(?=.*\d)(?=.*[!@*#])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
 const emailRequirements = /^(?=.*[/com/g])(?=.*[@])/;
 
 const msgErr = document.createElement(`p`);
 msgErr.classList.add(`error`);
+
+let inputNameOk = false;
+let inputNicknameOk = false;
+let inputEmailOk = false;
+let inputPassOk = false;
+let inputPassConfirmOk = false;
 
 // VALIDATE NAME INPUT
 inputName.addEventListener(`focusout`, () => {
@@ -32,6 +42,10 @@ inputName.addEventListener(`focusout`, () => {
   if (inputName.value.length >= 2 && inputName.parentElement.contains(msgErr)) {
     msgErr.innerText = ``;
     inputName.parentElement.removeChild(msgErr);
+  }
+
+  if (!inputName.parentElement.contains(msgErr)) {
+    return (inputNameOk = true);
   }
 });
 
@@ -56,6 +70,11 @@ inputNickname.addEventListener(`focusout`, () => {
     msgErr.innerText = ``;
     inputNickname.parentElement.removeChild(msgErr);
   }
+
+  if (!inputNickname.parentElement.contains(msgErr)) {
+    return (inputNicknameOk = true);
+  }
+  console.log(inputPassOk);
 });
 
 // VALIDATE EMAIL
@@ -64,8 +83,14 @@ inputEmail.addEventListener(`focusout`, () => {
     msgErr.innerText = `Invalid email`;
     inputEmail.parentElement.appendChild(msgErr);
   } else {
-    msgErr.innerText = ``;
-    inputEmail.parentElement.removeChild(msgErr);
+    if (inputEmail.parentElement.contains(msgErr)) {
+      msgErr.innerText = ``;
+      inputEmail.parentElement.removeChild(msgErr);
+    }
+  }
+
+  if (!inputEmail.parentElement.contains(msgErr)) {
+    return (inputEmailOk = true);
   }
 });
 
@@ -86,9 +111,15 @@ inputPass.addEventListener(`focusout`, () => {
       msgErr.innerText = `Password must have: 1 special character, upper and lowercase letters and numbers`;
       inputPass.parentElement.appendChild(msgErr);
     } else {
-      msgErr.innerText = ``;
-      inputPass.parentElement.removeChild(msgErr);
+      if (inputPass.parentElement.contains(msgErr)) {
+        msgErr.innerText = ``;
+        inputPass.parentElement.removeChild(msgErr);
+      }
     }
+  }
+
+  if (!inputPass.parentElement.contains(msgErr)) {
+    inputPassOk = true;
   }
 });
 
@@ -102,6 +133,41 @@ inputPassConfirm.addEventListener(`focusout`, () => {
       msgErr.innerText = ``;
       inputPassConfirm.parentElement.removeChild(msgErr);
     }
+
+    if (!inputPassConfirm.parentElement.contains(msgErr)) {
+      return (inputPassConfirmOk = true);
+    }
+  }
+});
+
+btnConfirm.addEventListener(`click`, (e) => {
+  e.preventDefault();
+  console.log(inputNameOk);
+  console.log(inputEmailOk);
+  console.log(inputNicknameOk);
+  console.log(inputPassOk);
+  console.log(inputPassConfirmOk);
+
+  if (
+    inputNameOk &&
+    inputNicknameOk &&
+    inputEmailOk &&
+    inputPassOk &&
+    inputPassConfirmOk
+  ) {
+    const newUser = {
+      name: inputName.value,
+      nickname: inputNickname.value,
+      email: inputEmail.value,
+      password: inputPass.value,
+    };
+
+    console.log(`clicked`);
+    storedRegisteredUsers.push(newUser);
+
+    localStorage.setItem(`registeredUsers`, storedRegisteredUsers);
+
+    window.location.href = "./tarefas.html";
   }
 });
 
