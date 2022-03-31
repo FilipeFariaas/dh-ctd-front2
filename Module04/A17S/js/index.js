@@ -38,7 +38,7 @@ function renderData(data) {
   card.innerHTML = template;
 
   btnRequestNew.addEventListener(`click`, (e) => {
-    e.preventDefault(0);
+    e.preventDefault();
 
     requestData(apiUrl);
   });
