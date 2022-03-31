@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;700&display=swap");
+
+:root {
+  --primary: #7898ff;
+  --secondary: #8e64c5;
+  --app-grey: #f2f2f2;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif;
+}
+
+body {
+  background: linear-gradient(110deg, var(--primary), var(--secondary));
+  height: 100vh;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+
+  width: 60%;
+  max-width: 600px;
+  min-width: 300px;
+  height: fit-content;
+
+  margin: 0 auto;
+  padding: 1rem;
+
+  background-color: rgba(255, 255, 255, 0.15);
+
+  border-radius: 20px;
+
+  backdrop-filter: blur(10px);
+
+  transition: all 0.5s ease-in-out;
+
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.profile {
+  width: 200px;
+  aspect-ratio: 1;
+}
+
+.profile img {
+  width: 100%;
+
+  border-radius: 50%;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.fullname {
+  text-transform: uppercase;
+}
+
+#random {
+  padding: 1rem;
+
+  text-transform: capitalize;
+
+  background-color: rgba(255, 255, 255, 0.35);
+
+  border: none;
+  border-radius: 20px;
+
+  backdrop-filter: blur(10px);
+
+  transition: all 0.25s ease-in-out;
+
+  cursor: pointer;
+}
+
+#random:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.55);
+}
