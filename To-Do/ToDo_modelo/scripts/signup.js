@@ -12,7 +12,7 @@ const storedRegisteredUsers = JSON.parse(
 );
 
 const passRequirements = /^(?=.*\d)(?=.*[!@*#])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
-const emailRequirements = /^(?=.*[/com/g])(?=.*[@])/;
+const emailRequirements = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const msgErr = document.createElement(`p`);
 msgErr.classList.add(`error`);
@@ -52,7 +52,7 @@ inputName.addEventListener(`focusout`, () => {
 // VALIDATE NICKNAME
 inputNickname.addEventListener(`focusout`, () => {
   if (inputNickname.value.length < 4) {
-    msgErr.innerText = `Nickname must have more than 1 letter`;
+    msgErr.innerText = `Nickname must have at least 4 characters`;
     inputNickname.parentElement.appendChild(msgErr);
     return;
   }
@@ -162,83 +162,10 @@ btnConfirm.addEventListener(`click`, (e) => {
       password: inputPass.value,
     };
 
-    console.log(`clicked`);
     storedRegisteredUsers.push(newUser);
 
-    localStorage.setItem(`registeredUsers`, storedRegisteredUsers);
+    localStorage.setItem(`registeredUsers`, JSON.stringify(storedRegisteredUsers));
 
     window.location.href = "./tarefas.html";
   }
 });
-
-// VALIDATE PHONE NUMBER INPUT
-// inputTel.addEventListener(`keypress`, (e) => {
-//   if (inputTel.value.length > 10) {
-//     e.preventDefault();
-//   }
-// });
-
-// VALIDATE HOBBIES
-// let totalHobbies = 0;
-// hobbies.forEach((hobbie) => {
-//   hobbie.addEventListener(`click`, (e) => {
-//     if (totalHobbies > 3) {
-//       !hobbie.checked ? totalHobbies-- : e.preventDefault();
-//     } else {
-//       totalHobbies++;
-//     }
-//   });
-// });
-
-// // VALIDATE COUNTRY
-// countries.forEach((country) => {
-//   country.addEventListener(`click`, (e) => {
-//     const selectedCountry = country.parentElement.innerText;
-//     if (selectedCountry == "Brasil") {
-//       e.preventDefault();
-//       alert(
-//         `Sorry, we are not recruiting wizards in Brazil yet, but we will be arriving soon`
-//       );
-//     }
-//   });
-// });
-
-// function entrar() {
-//   const email = document.querySelector("#inputEmail").value;
-
-//   const emailNormalizado = email.toLowerCase();
-//   console.log(emailNormalizado);
-
-//   email.innerHTML = emailNormalizado;
-
-//   const senha = document.querySelector("#inputPassword").value;
-
-//   if (senha.length >= 8 && senha.length < 12 && /.com$/.test(email)) {
-//     localStorage.setItem("login", emailNormalizado);
-
-//     alert("Login efetuado com sucesso!");
-
-//     window.location.href = "tarefas.html";
-//   } else {
-//     alert("login não efetuado.");
-//   }
-// }
-
-// document.querySelector(`.submit`).addEventListener(`click`, (e) => {
-//   e.preventDefault();
-//   const email = document.querySelector("#inputEmail").value;
-
-//   const emailNormalizado = email.toLowerCase();
-//   console.log(emailNormalizado);
-
-//   localStorage.setItem("login", emailNormalizado);
-// });
-
-// console.log(localStorage.getItem(`login`));
-
-// "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+).(\.[a-z]{2,3})$"
-// "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$"
-
-{
-  /* <script type="text/javascript"> function validateEmail(email) { var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/ if (reg.test(email)){ return true; } else{ return false; } } </script>  */
-}
