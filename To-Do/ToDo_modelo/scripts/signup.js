@@ -1,11 +1,13 @@
 "use-strict";
 
 const inputName = document.querySelector(`#name`);
-const inputNickname = document.querySelector(`#nickname`);
+const inputLastname = document.querySelector(`#lastname`);
 const inputEmail = document.querySelector(`#email`);
 const inputPass = document.querySelector(`#pass`);
 const inputPassConfirm = document.querySelector(`#pass--confirm`);
 const btnConfirm = document.querySelector(`.btn-confirm`);
+
+const API_URL = `https://ctd-todo-api.herokuapp.com/v1`;
 
 const storedRegisteredUsers = JSON.parse(
   localStorage.getItem(`registeredUsers`)
@@ -18,7 +20,7 @@ const msgErr = document.createElement(`p`);
 msgErr.classList.add(`error`);
 
 let inputNameOk = false;
-let inputNicknameOk = false;
+let inputLastnameOk = false;
 let inputEmailOk = false;
 let inputPassOk = false;
 let inputPassConfirmOk = false;
@@ -33,11 +35,11 @@ inputName.addEventListener(`focusout`, () => {
     return;
   }
 
-  if (inputName.value.split(` `).length < 2) {
-    msgErr.innerText = `Please enter your full name`;
-    inputName.parentElement.appendChild(msgErr);
-    return;
-  }
+  // if (inputName.value.split(` `).length < 2) {
+  //   msgErr.innerText = `Please enter your full name`;
+  //   inputName.parentElement.appendChild(msgErr);
+  //   return;
+  // }
 
   if (inputName.value.length >= 2 && inputName.parentElement.contains(msgErr)) {
     msgErr.innerText = ``;
@@ -49,32 +51,31 @@ inputName.addEventListener(`focusout`, () => {
   }
 });
 
-// VALIDATE NICKNAME
-inputNickname.addEventListener(`focusout`, () => {
-  if (inputNickname.value.length < 4) {
-    msgErr.innerText = `Nickname must have at least 4 characters`;
-    inputNickname.parentElement.appendChild(msgErr);
+// VALIDATE LASTNAME
+inputLastname.addEventListener(`focusout`, () => {
+  if (inputLastname.value.length <= 1) {
+    msgErr.innerText = `Lastname must have more than 1 characters`;
+    inputLastname.parentElement.appendChild(msgErr);
     return;
   }
 
-  if (inputNickname.value.split(` `).length > 1) {
-    msgErr.innerText = `Nickname must be only one word`;
-    inputNickname.parentElement.appendChild(msgErr);
-    return;
-  }
+  // if (inputLastname.value.split(` `).length > 1) {
+  //   msgErr.innerText = `Nickname must be only one word`;
+  //   inputLastname.parentElement.appendChild(msgErr);
+  //   return;
+  // }
 
   if (
-    inputNickname.value.length >= 2 &&
-    inputNickname.parentElement.contains(msgErr)
+    inputLastname.value.length >= 2 &&
+    inputLastname.parentElement.contains(msgErr)
   ) {
     msgErr.innerText = ``;
-    inputNickname.parentElement.removeChild(msgErr);
+    inputLastname.parentElement.removeChild(msgErr);
   }
 
-  if (!inputNickname.parentElement.contains(msgErr)) {
-    return (inputNicknameOk = true);
+  if (!inputLastname.parentElement.contains(msgErr)) {
+    return (inputLastnameOk = true);
   }
-  console.log(inputPassOk);
 });
 
 // VALIDATE EMAIL
@@ -140,32 +141,92 @@ inputPassConfirm.addEventListener(`focusout`, () => {
   }
 });
 
+// REGISTER USER
+function registerSuccessful(name, lastname, email, jsonReceived) {
+  // localStorage.setItem(
+  //   "user",
+  //   JSON.stringify({
+  //     name: name,
+  //     lastname: lastname,
+  //     email: email,
+  //     token: jsonReceived
+  //   })
+  // );
+
+  const newUser = {
+    name: name,
+    lastname: lastname,
+    email: email,
+    token: jsonReceived
+  }
+
+  alert("Success");
+
+  storedRegisteredUsers.push(newUser);
+
+  localStorage.setItem(
+    `registeredUsers`,
+    JSON.stringify(storedRegisteredUsers)
+  );
+
+    console.log(`function called`)
+
+  window.location.href = "tarefas.html";
+}
+
 btnConfirm.addEventListener(`click`, (e) => {
   e.preventDefault();
-  console.log(inputNameOk);
-  console.log(inputEmailOk);
-  console.log(inputNicknameOk);
-  console.log(inputPassOk);
-  console.log(inputPassConfirmOk);
+
+  console.log(inputNameOk)
+  console.log(inputLastnameOk)
+  console.log(inputEmailOk)
+  console.log(inputPassOk)
+  console.log(inputPassConfirmOk)
 
   if (
     inputNameOk &&
-    inputNicknameOk &&
+    inputLastnameOk &&
     inputEmailOk &&
     inputPassOk &&
     inputPassConfirmOk
   ) {
-    const newUser = {
-      name: inputName.value,
-      nickname: inputNickname.value,
-      email: inputEmail.value,
-      password: inputPass.value,
+
+    console.log(`dados ok`)
+    // const newUser = {
+    //   name: inputName.value,
+    //   nickname: inputNickname.value,
+    //   email: inputEmail.value,
+    //   password: inputPass.value,
+    // };
+
+    // storedRegisteredUsers.push(newUser);
+
+    // localStorage.setItem(
+    //   `registeredUsers`,
+    //   JSON.stringify(storedRegisteredUsers)
+    // );
+
+    const req = {
+      method: "POST",
+      body: JSON.stringify({
+        firstName: inputName.value,
+        lastName: inputLastname.value,
+        email: inputEmail.value,
+        password: inputPass.value
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
     };
 
-    storedRegisteredUsers.push(newUser);
+    fetch("https://ctd-todo-api.herokuapp.com/v1/users", req)
+      .then((response) => {
+        console.log(`first then`)
+        registerSuccessful(inputName.value, inputLastname.value, inputEmail.value, response.jwt);
+        return response.json();
+      })
+      .catch((error) => console.log(error));
+    }
 
-    localStorage.setItem(`registeredUsers`, JSON.stringify(storedRegisteredUsers));
-
-    window.location.href = "./tarefas.html";
-  }
+  window.location.href = "./tarefas.html";
 });
