@@ -206,8 +206,8 @@ btnConfirm.addEventListener(`click`, (e) => {
     //   JSON.stringify(storedRegisteredUsers)
     // );
 
-    const req = {
-      method: "POST",
+    let req = {
+      method: 'POST',
       body: JSON.stringify({
         firstName: inputName.value,
         lastName: inputLastname.value,
@@ -215,18 +215,19 @@ btnConfirm.addEventListener(`click`, (e) => {
         password: inputPass.value
       }),
       headers: {
-        "Content-type": "application/json",
+
+          'Content-type': 'application/json'
       },
     };
 
+    console.log(req.headers);
     fetch("https://ctd-todo-api.herokuapp.com/v1/users", req)
       .then((response) => {
-        console.log(`first then`)
         registerSuccessful(inputName.value, inputLastname.value, inputEmail.value, response.jwt);
+        window.location.href = "./tarefas.html";
         return response.json();
       })
       .catch((error) => console.log(error));
     }
 
-  window.location.href = "./tarefas.html";
 });

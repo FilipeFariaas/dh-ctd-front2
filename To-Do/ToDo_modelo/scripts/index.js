@@ -21,6 +21,10 @@ const storedRegisteredUsers = JSON.parse(
   localStorage.getItem(`registeredUsers`)
 );
 
+const saveJwt = (jwt) => {
+  return localStorage.setItem('jwt', jwt)
+}
+
 form.addEventListener(`submit`, (e) => {
   e.preventDefault();
 
@@ -31,25 +35,33 @@ form.addEventListener(`submit`, (e) => {
 
 btnSubmit.addEventListener(`click`, (e) => {
   e.preventDefault();
-  storedRegisteredUsers.forEach((storedUser) => {
-    if (
-      inputEmail.value === storedUser.email &&
-      inputPass.value === storedUser.password
-    ) {
-      if (inputPass.parentElement.contains(msgErr)) {
-        msgErr.innerText = ``;
-        inputPass.parentElement.removeChild(msgErr);
-      }
-      window.location.href = "./tarefas.html";
-    } else if (
-      inputEmail.value === storedUser.email ||
-      inputPass.value === storedUser.password
-    ) {
-      msgErr.innerText = `Invalid email or password`;
-      inputPass.parentElement.appendChild(msgErr);
-    } else {
-      msgErr.innerText = `Unregistered user`;
-      inputPass.parentElement.appendChild(msgErr);
+
+  let req = {
+    method: 'POST',
+    body: JSON.stringify({
+      email: inputEmail.value,
+      password: inputPass.value
+    }),
+    headers: {
+
+        'Content-type': 'application/json'
+    }
+  };
+  
+  if (
+    inputEmail.value === "" ||
+    inputPass.value === ""
+  ) {
+    msgErr.innerText = `Please insert your credentials`;
+    inputPass.parentElement.appendChild(msgErr);
+  } else {
+    fetch("https://ctd-todo-api.herokuapp.com/v1/users/login", req)
+      .then((response) => {
+        return response.json();
+      }).then(response => {
+        saveJwt(response.jwt)
+        window.location.href = "./tarefas.html";
+      })
+      .catch((error) => console.log(error));
     }
   });
-});
