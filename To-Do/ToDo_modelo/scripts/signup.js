@@ -35,12 +35,6 @@ inputName.addEventListener(`focusout`, () => {
     return;
   }
 
-  // if (inputName.value.split(` `).length < 2) {
-  //   msgErr.innerText = `Please enter your full name`;
-  //   inputName.parentElement.appendChild(msgErr);
-  //   return;
-  // }
-
   if (inputName.value.length >= 2 && inputName.parentElement.contains(msgErr)) {
     msgErr.innerText = ``;
     inputName.parentElement.removeChild(msgErr);
@@ -58,12 +52,6 @@ inputLastname.addEventListener(`focusout`, () => {
     inputLastname.parentElement.appendChild(msgErr);
     return;
   }
-
-  // if (inputLastname.value.split(` `).length > 1) {
-  //   msgErr.innerText = `Nickname must be only one word`;
-  //   inputLastname.parentElement.appendChild(msgErr);
-  //   return;
-  // }
 
   if (
     inputLastname.value.length >= 2 &&
@@ -143,24 +131,12 @@ inputPassConfirm.addEventListener(`focusout`, () => {
 
 // REGISTER USER
 function registerSuccessful(name, lastname, email, jsonReceived) {
-  // localStorage.setItem(
-  //   "user",
-  //   JSON.stringify({
-  //     name: name,
-  //     lastname: lastname,
-  //     email: email,
-  //     token: jsonReceived
-  //   })
-  // );
-
   const newUser = {
     name: name,
     lastname: lastname,
     email: email,
     token: jsonReceived
-  }
-
-  alert("Success");
+  };
 
   storedRegisteredUsers.push(newUser);
 
@@ -169,19 +145,11 @@ function registerSuccessful(name, lastname, email, jsonReceived) {
     JSON.stringify(storedRegisteredUsers)
   );
 
-    console.log(`function called`)
-
   window.location.href = "tarefas.html";
 }
 
 btnConfirm.addEventListener(`click`, (e) => {
   e.preventDefault();
-
-  console.log(inputNameOk)
-  console.log(inputLastnameOk)
-  console.log(inputEmailOk)
-  console.log(inputPassOk)
-  console.log(inputPassConfirmOk)
 
   if (
     inputNameOk &&
@@ -190,24 +158,8 @@ btnConfirm.addEventListener(`click`, (e) => {
     inputPassOk &&
     inputPassConfirmOk
   ) {
-
-    console.log(`dados ok`)
-    // const newUser = {
-    //   name: inputName.value,
-    //   nickname: inputNickname.value,
-    //   email: inputEmail.value,
-    //   password: inputPass.value,
-    // };
-
-    // storedRegisteredUsers.push(newUser);
-
-    // localStorage.setItem(
-    //   `registeredUsers`,
-    //   JSON.stringify(storedRegisteredUsers)
-    // );
-
     let req = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
         firstName: inputName.value,
         lastName: inputLastname.value,
@@ -215,19 +167,18 @@ btnConfirm.addEventListener(`click`, (e) => {
         password: inputPass.value
       }),
       headers: {
-
-          'Content-type': 'application/json'
+        "Content-type": "application/json",
       },
     };
 
-    console.log(req.headers);
     fetch("https://ctd-todo-api.herokuapp.com/v1/users", req)
       .then((response) => {
-        registerSuccessful(inputName.value, inputLastname.value, inputEmail.value, response.jwt);
-        window.location.href = "./tarefas.html";
         return response.json();
+      }).then(response => {
+        registerSuccessful(inputName.value, inputLastname.value, inputEmail.value, response.jwt)
+        localStorage.setItem("jwt", response.jwt)
+        window.location.href = "./tarefas.html";
       })
       .catch((error) => console.log(error));
-    }
-
+  }
 });
