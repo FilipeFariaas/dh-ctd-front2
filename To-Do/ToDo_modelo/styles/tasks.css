@@ -156,10 +156,22 @@ a {
   transition: background-color 200ms linear;
 }
 
+.tarefa--concluida #edit-task {
+  display: none;
+}
+
+.tarefa--pendente #deleteTask {
+  display: none;
+}
+
 #edit-task {
+  /* position: absolute;
+  top: 0.5rem;
+  right: 2rem; */
+
   position: absolute;
   top: 0.5rem;
-  right: 2rem;
+  right: 0.5rem;
 
   display: flex;
   align-items: center;
@@ -338,11 +350,18 @@ a {
 }
 
 .tarefas-terminadas {
+  /* display: flex;
+  flex-direction: column;
+  width: 100%;
+  list-style: none;
+  margin: 2em 15%; */
+
   display: flex;
   flex-direction: column;
-  width: 70%;
+  align-items: center;
+  width: 100%;
   list-style: none;
-  margin: 2em 15%;
+  margin: 2em 0;
 }
 
 .tarefas-terminadas i {

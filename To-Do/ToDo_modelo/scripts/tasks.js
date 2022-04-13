@@ -1,10 +1,10 @@
 "use-strict";
 
-// const userName = document.querySelector(`#username`);
 const btnEndSession = document.querySelector(`#closeApp`);
 const inputNewTask = document.querySelector(`#novaTarefa`);
 const btnAddTask = document.querySelector(`#addTask`);
 const tasksPending = document.querySelector(`.tarefas-pendentes`);
+const tasksCompleted = document.querySelector(`.tarefas-terminadas`);
 
 const loggedUser = localStorage.getItem("jwt");
 
@@ -13,6 +13,7 @@ const API_URL = `https://ctd-todo-api.herokuapp.com/v1`;
 const closeEditModal = (parent, child) => parent.removeChild(child);
 
 const deleteTask = (id) => {
+  console.log(id);
   let config = {
     method: "DELETE",
     headers: {
@@ -29,9 +30,6 @@ const deleteTask = (id) => {
 };
 
 const saveChanges = (id, newTitle) => {
-  // const formatedId = id.slice(1);
-  const formatedId = id;
-  // const formatedId = id;
   const config = {
     method: "PUT",
     headers: {
@@ -44,7 +42,7 @@ const saveChanges = (id, newTitle) => {
     })
   };
 
-  fetch(`${API_URL}/tasks/${formatedId}`, config)
+  fetch(`${API_URL}/tasks/${id}`, config)
     .then((response) => {
       return response.json();
     })
@@ -52,8 +50,6 @@ const saveChanges = (id, newTitle) => {
 };
 
 const getTaskData = (id) => {
-  // const taskId = id.slice(1);
-  // const taskId = id;
   const config = {
     method: "GET",
     headers: {
@@ -67,57 +63,17 @@ const getTaskData = (id) => {
       return reponse.json();
     })
     .then((data) => {
-      // console.log(data);
       const { id } = data;
       const { description } = data;
 
       editTask(id, description);
-      // completeTask(data);
 
-      // return data;
-    })
-    .catch((err) => console.log(err));
-};
-
-// ! TEST
-
-const getIndividualTaskData = (id) => {
-  // const taskId = id.slice(1);
-  // const taskId = id;
-  // let taskCompleted;
-
-  const config = {
-    method: "GET",
-    headers: {
-      "Content-type": "application/json",
-      Authorization: loggedUser
-    }
-  };
-
-  fetch(`${API_URL}/tasks/${id}`, config)
-    .then((reponse) => {
-      return reponse.json();
-    })
-    .then((data) => {
-      // console.log(data);
-      // const { completed } = data;
-      // completeTask(data);
       return data;
-      // return completeTask(data);
-      // console.log(completed);
-      // return (taskCompleted = completed);
-      // return data;
     })
     .catch((err) => console.log(err));
-
-  // return taskCompleted;
 };
 
 const editTask = (id, taskTitle) => {
-  // const taskId = id.slice(1);
-
-  // getTaskData(id);
-
   const container = document.querySelector(`.container`);
   const editTaskModal = document.createElement(`div`);
   editTaskModal.classList.add(`edit-task-modal`);
@@ -126,10 +82,7 @@ const editTask = (id, taskTitle) => {
       <button id="close-edit-modal">X</button>
       <div class="edit-task--input-wrapper">
         <label>Título</label>
-        <input id="edit-task-input" type="text" value="${
-          // document.querySelector(`#${taskId} .descricao .nome`).innerText
-          taskTitle
-        }" />
+        <input id="edit-task-input" type="text" value="${taskTitle}" />
       </div>
 
       <div class="edit-task-buttons">
@@ -170,21 +123,37 @@ const editTask = (id, taskTitle) => {
   });
 };
 
-// TODO MARCAR COMO CONCLUÍDA
-
-const completeTask = (task) => {
-  // console.log(completed);
+const completeTask = () => {
   const btnCompleteTask = document.querySelectorAll(`.not-done`);
-  btnCompleteTask.forEach((btn) => {
-    btn.addEventListener(`click`, async (e) => {
-      e.preventDefault();
-      const taskId = btn.parentElement.getAttribute(`id`).slice(1);
-      const taskTitle = btn.nextElementSibling.children[0].innerText;
 
-      let previousState = await getIndividualTaskData(taskId);
-      console.log(previousState);
-      // const prevTaksState = getIndividualTaskData(taskId);
-      // console.log(prevTaksState);
+  btnCompleteTask.forEach((btn) => {
+    btn.addEventListener(`click`, (e) => {
+      e.preventDefault();
+
+      console.log(`clicked`);
+
+      const task = btn.parentElement;
+      const taskId = task.getAttribute(`id`).slice(1);
+      const taskTitle = btn.nextElementSibling.children[0].innerText;
+      const taskCreation = btn.nextElementSibling.children[1].innerText;
+
+      task.classList.toggle(`tarefa--pendente`);
+      task.classList.toggle(`tarefa--concluida`);
+
+      const taskIsComplete = task.classList.contains(`tarefa--concluida`);
+
+      console.log(task);
+
+      const taskObj = {
+        id: taskId,
+        description: taskTitle,
+        createdAt: taskCreation,
+        completed: taskIsComplete
+      };
+
+      task.remove();
+
+      renderTask(taskObj);
 
       const config = {
         method: "PUT",
@@ -194,17 +163,15 @@ const completeTask = (task) => {
         },
         body: JSON.stringify({
           description: taskTitle,
-          completed: true
+          completed: taskIsComplete ? true : false
         })
       };
 
       fetch(`${API_URL}/tasks/${taskId}`, config)
         .then((response) => {
-          // console.log(response);
           return response.json();
         })
         .then((response) => {
-          console.log(response);
           return response;
         })
         .catch((err) => console.log(err));
@@ -212,25 +179,44 @@ const completeTask = (task) => {
   });
 };
 
-const renderTask = (task) => {
-  let { id } = task;
-  let { description } = task;
-  let { createdAt } = task;
-  let taskTemplate = `
-    <li id=_${id} class="tarefa">
+const createTaskTemplate = (id, title, creation, completed) => {
+  const taskTemplate = `
+    <li id=_${id} class="tarefa tarefa--${
+    completed ? "concluida" : "pendente"
+  }">
       <button id="edit-task">
         <img src="../assets/pencil.png" />
       </button>
       <button id="deleteTask">X</button>
       <div class="not-done"></div>
       <div class="descricao">
-        <p class="nome">${description}</p>
-        <p class="timestamp">${new Date(createdAt).toLocaleString()}</p>
+        <p class="nome">${title}</p>
+        <p class="timestamp">${new Date(creation).toLocaleString()}</p>
       </div>
     </li>
   `;
 
-  tasksPending.innerHTML += taskTemplate;
+  return taskTemplate;
+};
+
+const renderTask = (task) => {
+  const { completed } = task;
+
+  if (completed) {
+    tasksCompleted.innerHTML += createTaskTemplate(
+      task.id,
+      task.description,
+      task.createdAt,
+      task.completed
+    );
+  } else {
+    tasksPending.innerHTML += createTaskTemplate(
+      task.id,
+      task.description,
+      task.createdAt,
+      task.completed
+    );
+  }
 
   inputNewTask.value = "";
 
@@ -239,11 +225,8 @@ const renderTask = (task) => {
   btnDeleteTask.forEach((btn) => {
     btn.addEventListener(`click`, (e) => {
       e.preventDefault();
-      const taskId = document
-        .querySelector(`.tarefa`)
-        .getAttribute("id")
-        .slice(1);
-      // deleteTask(document.querySelector(`.tarefa`).getAttribute("id"));
+
+      const taskId = btn.parentElement.getAttribute("id").slice(1);
       deleteTask(taskId);
       btn.parentElement.remove();
     });
@@ -253,20 +236,15 @@ const renderTask = (task) => {
 
   btnEditTask.forEach((btn) => {
     btn.addEventListener(`click`, (e) => {
-      // let id = btn.parentElement.getAttribute("id");
       e.preventDefault();
-      // const taskId = document
-      //   .querySelector(`.tarefa`)
-      //   .getAttribute("id")
-      //   .slice(1);
+
       const taskId = btn.parentElement.getAttribute("id").slice(1);
-      // .slice(1);
-      // editTask(taskId);
+
       getTaskData(taskId);
     });
   });
 
-  completeTask(id);
+  completeTask();
 };
 
 const loadUserTasks = () => {
