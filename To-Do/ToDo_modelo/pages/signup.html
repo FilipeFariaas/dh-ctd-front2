@@ -7,16 +7,16 @@
     <title>To-Do App</title>
 
     <!-- ---------------- estilos compartilhados entre login e signup ---------------- -->
-    <link rel="stylesheet" href="styles/acesso.css" />
+    <link rel="stylesheet" href="../styles/access.css" />
 
     <!-- ---------------------- lógica aplicada no registro -------------------- -->
     <!-- <script src="/scripts/utils.js"></script> -->
-    <script type="module" src="./scripts/signup.js" defer></script>
+    <script src="../scripts/signup.js" defer></script>
   </head>
 
   <body>
     <div class="left">
-      <img src="./assets/pessoa-signup.png" alt="" />
+      <img src="../assets/pessoa-signup.png" alt="" />
     </div>
     <div class="right">
       <form>
@@ -26,29 +26,29 @@
 
         <label>
           Nome:
-          <input id="name" type="text" value="Filipe"/>
+          <input id="name" type="text" />
         </label>
         <label>
           Sobrenome:
-          <input id="lastname" type="text" value="Farias" />
+          <input id="lastname" type="text" />
         </label>
         <label>
           Email:
-          <input id="email" type="text" value="filipefarias117@gmail.com"/>
+          <input id="email" type="text" />
         </label>
         <label>
           Senha:
-          <input id="pass" type="password" value="minhaSenha!123"/>
+          <input id="pass" type="password" />
         </label>
         <label>
           Repetir senha:
-          <input id="pass--confirm" type="password" value="minhaSenha!123"/>
+          <input id="pass--confirm" type="password" />
         </label>
 
         <button class="btn-confirm">Criar conta</button>
       </form>
       <div class="ingressar">
-        <a href="index.html">Já possui conta? Acesse aqui</a>
+        <a href="../index.html">Já possui conta? Acesse aqui</a>
       </div>
     </div>
   </body>

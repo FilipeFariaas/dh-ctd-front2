@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- ----------------------------- estilos CSS ----------------------------- -->
-    <link rel="stylesheet" href="./styles/tarefas.css" />
+    <link rel="stylesheet" href="../styles/tasks.css" />
+    <link rel="stylesheet" href="../styles/avatars.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
     <!-- ------------------- Biblioteca de icones - Fontawesome -------------------- -->
@@ -24,7 +25,8 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <script  type="module" src="./scripts/tasks.js" defer></script>
+    <script src="../scripts/profile.js" defer></script>
+    <script src="../scripts/tasks.js" defer></script>
 
     <title>To-Do App</title>
   </head>
@@ -38,20 +40,23 @@
       <div class="user-info">
         <p id="username">Nome usuário</p>
         <div class="user-image"></div>
-        <button id="closeApp">Finalizar sessão</buttons>
+        <button id="closeApp">Sair</button>
       </div>
     </header>
 
+    <div class="container">
+        
+        
     <form class="nova-tarefa">
       <div class="not-done"></div>
       <input id="novaTarefa" type="text" placeholder="Nova tarefa" />
       <button id="addTask" type="submit">
-        <img src="./assets/plus.png" alt="Adicionar uma nova tarefa" />
+        <img src="../assets/plus.png" alt="Adicionar uma nova tarefa" />
       </button>
     </form>
 
     <ul class="tarefas-pendentes">
-      <!-- <div id="skeleton">
+<!--       <div id="skeleton">
         <li class="tarefa">
           <div class="not-done"></div>
           <div class="descricao">
@@ -78,5 +83,8 @@
 
     <h2 class="titulo-terminadas">Tarefas terminadas</h2>
     <ul class="tarefas-terminadas"></ul>
+
+    </div>
+
   </body>
 </html>

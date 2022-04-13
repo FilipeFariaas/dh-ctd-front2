@@ -13,6 +13,8 @@ const rootUser = {
   password: `myPassword!123`,
 };
 
+const API_URL = `https://ctd-todo-api.herokuapp.com/v1`;
+
 if (!localStorage.getItem(`registeredUsers`)) {
   localStorage.setItem(`registeredUsers`, JSON.stringify([rootUser]));
 }
@@ -21,7 +23,7 @@ const storedRegisteredUsers = JSON.parse(
   localStorage.getItem(`registeredUsers`)
 );
 
-export const saveJwt = (jwt) => {
+const saveJwt = (jwt) => {
   return localStorage.setItem("jwt", jwt);
 };
 
@@ -36,7 +38,7 @@ form.addEventListener(`submit`, (e) => {
 btnSubmit.addEventListener(`click`, (e) => {
   e.preventDefault();
 
-  let req = {
+  let config = {
     method: "POST",
     body: JSON.stringify({
       email: inputEmail.value,
@@ -51,13 +53,13 @@ btnSubmit.addEventListener(`click`, (e) => {
     msgErr.innerText = `Please insert your credentials`;
     inputPass.parentElement.appendChild(msgErr);
   } else {
-    fetch("https://ctd-todo-api.herokuapp.com/v1/users/login", req)
+    fetch(`${API_URL}/users/login`, config)
       .then((response) => {
         return response.json();
       })
       .then((response) => {
         saveJwt(response.jwt);
-        window.location.href = "./tarefas.html";
+        window.location.href = "./pages/tasks.html";
       })
       .catch((error) => console.log(error));
   }

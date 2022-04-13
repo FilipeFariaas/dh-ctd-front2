@@ -92,3 +92,13 @@ button {
 .error {
   color: red;
 }
+
+@media screen and (max-width: 650px) {
+  .left {
+    display: none;
+  }
+
+  .right {
+    width: 100%;
+  }
+}

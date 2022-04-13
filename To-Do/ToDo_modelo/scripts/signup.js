@@ -13,6 +13,10 @@ const storedRegisteredUsers = JSON.parse(
   localStorage.getItem(`registeredUsers`)
 );
 
+const saveJwt = (jwt) => {
+  return localStorage.setItem("jwt", jwt);
+};
+
 const passRequirements = /^(?=.*\d)(?=.*[!@*#])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
 const emailRequirements = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -145,7 +149,7 @@ function registerSuccessful(name, lastname, email, jsonReceived) {
     JSON.stringify(storedRegisteredUsers)
   );
 
-  window.location.href = "tarefas.html";
+  window.location.href = "../pages/tasks.html";
 }
 
 btnConfirm.addEventListener(`click`, (e) => {
@@ -158,7 +162,7 @@ btnConfirm.addEventListener(`click`, (e) => {
     inputPassOk &&
     inputPassConfirmOk
   ) {
-    let req = {
+    let config = {
       method: "POST",
       body: JSON.stringify({
         firstName: inputName.value,
@@ -167,17 +171,23 @@ btnConfirm.addEventListener(`click`, (e) => {
         password: inputPass.value
       }),
       headers: {
-        "Content-type": "application/json",
-      },
+        "Content-type": "application/json"
+      }
     };
 
-    fetch("https://ctd-todo-api.herokuapp.com/v1/users", req)
+    fetch(`${API_URL}/users`, config)
       .then((response) => {
         return response.json();
-      }).then(response => {
-        registerSuccessful(inputName.value, inputLastname.value, inputEmail.value, response.jwt)
-        localStorage.setItem("jwt", response.jwt)
-        window.location.href = "./tarefas.html";
+      })
+      .then((response) => {
+        registerSuccessful(
+          inputName.value,
+          inputLastname.value,
+          inputEmail.value,
+          response.jwt
+        );
+        saveJwt(response.jwt);
+        window.location.href = "../pages/tasks.html";
       })
       .catch((error) => console.log(error));
   }
